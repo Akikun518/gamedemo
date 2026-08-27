@@ -45,9 +45,15 @@ func resolve(mission: MissionData, team: Array[MercenaryData], start_day: int) -
         modifier -= 1
 
     var failure_type := "FAILED_NO_CASUALTY"
+    var damage := false
+    var death := false
     if not success:
-        if skill_shortfall > 0 and true_rank_number >= 3:
+        if true_rank_number >= 4 and skill_shortfall >= 2:
+            failure_type = "FAILED_DEATH"
+            death = true
+        elif true_rank_number >= 3 and skill_shortfall > 0:
             failure_type = "FAILED_INJURY"
+            damage = true
         else:
             failure_type = "FAILED_NO_CASUALTY"
 
@@ -86,8 +92,8 @@ func resolve(mission: MissionData, team: Array[MercenaryData], start_day: int) -
         "timed_out": timed_out,
         "due_day": settlement_day,
         "reward": mission.reward if success else 0,
-        "damage": false,
-        "death": false,
+        "damage": damage,
+        "death": death,
         "failure_type": failure_type if not success else "",
         "skill_shortfall": skill_shortfall,
         "affection_changes": affection_changes,

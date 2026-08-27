@@ -64,3 +64,33 @@ GitHub Push：
 
 下一步：
 - Phase 6：失败 / 伤亡 / 赔偿 / 关系。
+
+## M0.2.3
+
+日期：2026-08-27
+
+目标：失败 / 伤亡 / 赔偿基础闭环。
+
+完成：
+- 技能不足导致的高风险失败会返回 FAILED_INJURY / FAILED_DEATH。
+- 死亡时标记阵亡佣兵、扣除信誉，并产生待支付赔偿。
+- 提供 pay_compensation / decline_compensation 两个状态接口。
+
+修改：
+- scripts/mission/mission_resolver.gd
+- scripts/core/game_state.gd
+
+测试：
+- `godot --headless res://tests/m0_headless_test.tscn` 通过。
+
+Git Commit：
+- 待提交。
+
+GitHub Push：
+- 待推送。
+
+已知问题：
+- 赔偿还没有 UI 入口。
+
+下一步：
+- Phase 7：夜晚最小情报闭环。

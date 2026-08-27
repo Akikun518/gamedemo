@@ -5,6 +5,7 @@ var current_day := 1
 var current_phase := TimeSystem.MORNING
 var money := 500
 var reputation := 0
+var compensation_due := 0
 
 var selected_mercenary_ids: Array[String] = []
 var selected_contract_id := ""
@@ -481,6 +482,9 @@ func _settle_due_missions() -> void:
 				team.append(mercenary)
 
 		var result := _resolver.resolve(mission, team, int(assignment.get("start_day", current_day)))
+		if bool(result.get("death", false)):
+			result["dead_mercenary_ids"] = _pick_dead_mercenaries(team)
+			result["compensation_due"] = (result["dead_mercenary_ids"] as Array).size() * 100
 		if bool(result.get("success", false)):
 			result["reward"] = int(assignment.get("reward", result.get("reward", 0)))
 		if bool(assignment.get("timed_out", false)):
@@ -519,8 +523,21 @@ func _apply_result(mission: MissionData, result: Dictionary) -> void:
 	money += int(result.get("reward", 0))
 	reputation += int(result.get("reputation_change", 0))
 
+	var dead_ids: Array[String] = []
+	for id in result.get("dead_mercenary_ids", []) as Array:
+		dead_ids.append(str(id))
+		var mercenary := mercenary_manager.get_mercenary(str(id))
+		if mercenary != null:
+			mercenary.alive = false
+			mercenary.affection = 0
+	if not dead_ids.is_empty():
+		reputation -= 20 * dead_ids.size()
+		compensation_due += int(result.get("compensation_due", 0))
+
 	var changes := result.get("affection_changes", {}) as Dictionary
 	for mercenary_id in changes:
+		if dead_ids.has(str(mercenary_id)):
+			continue
 		var mercenary := mercenary_manager.get_mercenary(str(mercenary_id))
 		if mercenary != null:
 			mercenary.affection = clampi(mercenary.affection + int(changes[mercenary_id]), 0, 100)
@@ -529,3 +546,32 @@ func _apply_result(mission: MissionData, result: Dictionary) -> void:
 		var id := str(intel_id)
 		if not known_intel.has(id) and _intel_by_id.has(id):
 			known_intel.append(id)
+
+func _pick_dead_mercenaries(team: Array[MercenaryData]) -> Array[String]:
+	if team.is_empty():
+		return []
+	var weakest := team[0]
+	for mercenary in team:
+		var weak_score := int(weakest.stats.get("combat", 0)) + int(weakest.stats.get("agility", 0))
+		var score := int(mercenary.stats.get("combat", 0)) + int(mercenary.stats.get("agility", 0))
+		if score < weak_score:
+			weakest = mercenary
+	return [weakest.id]
+
+func pay_compensation() -> Dictionary:
+	if compensation_due <= 0:
+		return {"error": "没有待支付赔偿。"}
+	if money < compensation_due:
+		return {"error": "资金不足。"}
+	money -= compensation_due
+	compensation_due = 0
+	state_changed.emit()
+	return {"ok": true}
+
+func decline_compensation() -> Dictionary:
+	if compensation_due <= 0:
+		return {"error": "没有待支付赔偿。"}
+	compensation_due = 0
+	reputation -= 5
+	state_changed.emit()
+	return {"ok": true}
