@@ -8,12 +8,14 @@ const MODE_DETAIL := "detail"
 const MODE_ASSESS := "assess"
 const MODE_NEGOTIATE := "negotiate"
 const MODE_MERCENARY := "mercenary"
+const MODE_ROSTER := "roster"
 const CONTRACT_CARD := preload("res://scenes/morning/contract_card.tscn")
 
 var _mode := MODE_BOARD
 
 @onready var title_label: Label = $Title
 @onready var stats_label: Label = $StatsLabel
+@onready var roster_button: Button = $RosterButton
 @onready var content: VBoxContainer = $ContentScroll/Content
 @onready var back_button: Button = $BackButton
 @onready var debug_button: Button = $DebugButton
@@ -30,6 +32,7 @@ func _render() -> void:
 	title_label.text = "FIXER TERMINAL · Day %d" % GameState.current_day
 	stats_label.text = "资金：%d   信誉：%d   调查点：%d" % [GameState.money, GameState.reputation, GameState.investigation_points]
 	back_button.visible = _mode != MODE_BOARD
+	roster_button.visible = _mode == MODE_BOARD
 	debug_button.text = "Debug: ON" if GameState.debug_mode else "Debug"
 	for child in content.get_children():
 		child.queue_free()
@@ -45,6 +48,8 @@ func _render() -> void:
 			_render_negotiate()
 		MODE_MERCENARY:
 			_render_mercenary()
+		MODE_ROSTER:
+			_render_roster()
 
 func _render_board() -> void:
 	var contracts := GameState.pending_contracts()
@@ -58,6 +63,31 @@ func _render_board() -> void:
 			card.pressed.connect(func(id: String) -> void: _open_contract(id))
 	if GameState.debug_mode:
 		_render_debug_menu()
+
+func _render_roster() -> void:
+	_add_label("可用佣兵")
+	for mercenary in GameState.available_mercenaries():
+		var stats := mercenary.stats
+		var line := "%s  |  %s  |  %d星  |  好感度 %d/100\n战力 %d / 黑客 %d / 口才 %d / 敏捷 %d / 义体 %d" % [
+			mercenary.display_name,
+			mercenary.role,
+			mercenary.star,
+			mercenary.affection,
+			int(stats.get("combat", 0)),
+			int(stats.get("hacking", 0)),
+			int(stats.get("persuasion", 0)),
+			int(stats.get("agility", 0)),
+			int(stats.get("cyberware", 0)),
+		]
+		if not mercenary.personality.is_empty():
+			line += "\n性格：%s" % mercenary.personality
+		if not mercenary.taboo.is_empty():
+			line += "\n禁忌：%s" % mercenary.taboo
+		if not mercenary.likes.is_empty():
+			line += "\n喜欢：%s" % "、".join(mercenary.likes)
+		if not mercenary.dislikes.is_empty():
+			line += "\n讨厌：%s" % "、".join(mercenary.dislikes)
+		_add_label(line)
 
 func _render_debug_menu() -> void:
 	_add_label("--- DEBUG ---")
@@ -220,8 +250,14 @@ func _add_button(text: String, callback: Callable) -> void:
 func _on_back_button_pressed() -> void:
 	if _mode == MODE_DETAIL:
 		_mode = MODE_BOARD
+	elif _mode == MODE_ROSTER:
+		_mode = MODE_BOARD
 	else:
 		_mode = MODE_DETAIL
+	_render()
+
+func _on_roster_button_pressed() -> void:
+	_mode = MODE_ROSTER
 	_render()
 
 func _on_debug_button_pressed() -> void:
