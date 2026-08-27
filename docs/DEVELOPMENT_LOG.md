@@ -33,3 +33,34 @@ GitHub Push：
 
 下一步：
 - Phase 5：佣兵技能与团队能力。
+
+## M0.2.2
+
+日期：2026-08-27
+
+目标：让佣兵技能真正参与任务结算。
+
+完成：
+- MissionResolver 现在按团队最高技能值检查任务的 `required_skills`。
+- 任务数据从 `required_roles` 自动映射到技能与门槛；也可直接用 `required_skills` 指定。
+- 技能不足时任务失败，并返回 `failure_type` 与 `skill_shortfall`。
+
+修改：
+- scripts/mission/mission_data.gd
+- scripts/mission/mission_resolver.gd
+- tests/m0_headless_test.gd
+
+测试：
+- `godot --headless res://tests/m0_headless_test.tscn` 通过。
+
+Git Commit：
+- cb5cc8b feat: use mercenary skills for mission resolution
+
+GitHub Push：
+- 已推送 origin/main。
+
+已知问题：
+- 失败 / 伤亡 / 赔偿 / 关系闭环尚未接入。
+
+下一步：
+- Phase 6：失败 / 伤亡 / 赔偿 / 关系。
