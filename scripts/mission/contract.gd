@@ -41,6 +41,15 @@ func intel_progress() -> float:
 func intel_summary() -> String:
     return "%d / %d" % [discovered_intel.size(), mission.intel_entries.size()]
 
+func rank_options() -> Array[String]:
+    return mission.rank_options_for_intel(discovered_intel)
+
+func risk_flags() -> Array[String]:
+    return mission.discovered_risk_flags(discovered_intel)
+
+func negotiation_window() -> int:
+    return mission.negotiation_window(discovered_intel)
+
 func board_summary() -> String:
     var suffix := ""
     if not night_intel_ids.is_empty():

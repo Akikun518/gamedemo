@@ -109,7 +109,16 @@ static func _parse_intel_entries(record: Dictionary) -> Array[Dictionary]:
     var entries: Array[Dictionary] = []
     if record.has("intelEntries"):
         for entry in record.get("intelEntries", []) as Array:
-            entries.append(entry as Dictionary)
+            var parsed := entry as Dictionary
+            if not parsed.has("rankAdjustment"):
+                parsed["rankAdjustment"] = 0
+            if not parsed.has("rewardAdjustment"):
+                parsed["rewardAdjustment"] = 0
+            if not parsed.has("durationAdjustment"):
+                parsed["durationAdjustment"] = 0
+            if not parsed.has("riskFlags"):
+                parsed["riskFlags"] = []
+            entries.append(parsed)
         return entries
     var option_count := record.get("investigationOptions", []) as Array
     var count := maxi(option_count.size(), 4)
@@ -119,6 +128,10 @@ static func _parse_intel_entries(record: Dictionary) -> Array[Dictionary]:
             "source": "调查",
             "description": "这条情报揭示了委托背后的一些信息。",
             "reliability": "中",
+            "rankAdjustment": 0,
+            "rewardAdjustment": 0,
+            "durationAdjustment": 0,
+            "riskFlags": [],
         })
     return entries
 
@@ -132,6 +145,42 @@ func max_supported_rank_for_progress(progress: float) -> String:
     if progress >= NEGOTIATION_FULL_THRESHOLD:
         return true_rank
     return surface_rank
+
+func intel_rank_adjustment(discovered_ids: Array[String]) -> int:
+    var adjustment := 0
+    for entry in intel_entries:
+        if discovered_ids.has(str(entry.get("id", ""))):
+            adjustment += int(entry.get("rankAdjustment", 0))
+    return adjustment
+
+func rank_options_for_intel(discovered_ids: Array[String]) -> Array[String]:
+    var options: Array[String] = []
+    var surface := rank_number(surface_rank)
+    var true_num := rank_number(true_rank)
+    var max_num := clampi(surface + intel_rank_adjustment(discovered_ids), surface, true_num)
+    for rank in RANKS:
+        var num := rank_number(rank)
+        if num >= surface and num <= max_num:
+            options.append(rank)
+    return options
+
+func discovered_risk_flags(discovered_ids: Array[String]) -> Array[String]:
+    var flags: Array[String] = []
+    for entry in intel_entries:
+        if discovered_ids.has(str(entry.get("id", ""))):
+            for flag in entry.get("riskFlags", []) as Array:
+                var text := str(flag)
+                if not flags.has(text):
+                    flags.append(text)
+    return flags
+
+func negotiation_window(discovered_ids: Array[String]) -> int:
+    var window := surface_reward
+    for entry in intel_entries:
+        if discovered_ids.has(str(entry.get("id", ""))):
+            window += int(entry.get("rewardAdjustment", 0))
+    window = maxi(window, recommended_reward)
+    return clampi(window, minimum_reasonable_reward, maximum_reasonable_reward)
 
 func rank_options(progress: float) -> Array[String]:
     var options: Array[String] = []

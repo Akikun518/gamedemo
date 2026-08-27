@@ -125,7 +125,7 @@ func lowball_dialogue(mercenary_id: String) -> String:
 	if count >= 3:
 		return "以后这种价格别找我。"
 	if count == 2:
-		return "你小子是不是越来越会算账了？"
+		return "你最近是不是越来越会算账了？"
 	if count == 1:
 		return "钱有点少。"
 	return ""
@@ -200,7 +200,7 @@ func selected_contract_rank_options() -> Array[String]:
 	var contract := selected_contract()
 	if contract == null:
 		return []
-	return contract.mission.rank_options(contract.intel_progress())
+	return contract.rank_options()
 
 func investigate_contract(option_id: String) -> Dictionary:
 	var contract := selected_contract()
@@ -232,7 +232,7 @@ func assess_contract(rank: String) -> Dictionary:
 	var contract := selected_contract()
 	if contract == null:
 		return {"error": "No contract selected."}
-	if not contract.mission.rank_options(contract.intel_progress()).has(rank):
+	if not contract.rank_options().has(rank):
 		return {"error": "当前情报不足以把委托评估为该等级。"}
 	contract.assessed_rank = rank
 	contract.state = Contract.STATE_READY_FOR_ASSESSMENT
@@ -247,9 +247,8 @@ func negotiate_contract(reward: int) -> Dictionary:
 		return {"error": "先完成评估再谈判。"}
 	contract.negotiated_reward = reward
 	contract.state = Contract.STATE_AWAITING_CLIENT
-	var progress := contract.intel_progress()
 	var mission := contract.mission
-	var window := int(lerpf(float(mission.recommended_reward), float(mission.maximum_reasonable_reward), progress))
+	var window := contract.negotiation_window()
 	if reward <= mission.recommended_reward:
 		contract.client_response = "Accepted"
 	elif reward <= window:

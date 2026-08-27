@@ -119,8 +119,10 @@ func _render_assess() -> void:
 		return
 	_add_label("当前表面等级：%s" % contract.mission.surface_rank)
 	_add_label("已知情报：%s" % contract.intel_summary())
+	if not contract.risk_flags().is_empty():
+		_add_label("隐藏风险：%s" % "、".join(contract.risk_flags()))
 	_add_label("可设置等级：")
-	for rank in contract.mission.rank_options(contract.intel_progress()):
+	for rank in GameState.selected_contract_rank_options():
 		_add_button(rank, func() -> void: _assess(rank))
 
 func _assess(rank: String) -> void:
@@ -135,7 +137,7 @@ func _render_negotiate() -> void:
 		_render()
 		return
 	_add_label("客户原报价：%d" % contract.mission.surface_reward)
-	_add_label("推荐报价区间：%d ～ %d" % [contract.mission.minimum_reasonable_reward, contract.mission.maximum_reasonable_reward])
+	_add_label("推荐报价区间：%d ～ %d" % [contract.mission.minimum_reasonable_reward, contract.negotiation_window()])
 	var input := LineEdit.new()
 	input.placeholder_text = str(contract.mission.recommended_reward)
 	content.add_child(input)

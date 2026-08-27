@@ -165,14 +165,13 @@ func _run_debug_and_night_tests(errors: Array[String]) -> void:
 	_expect(errors, has_night_hint, "Night intel should mark a related pending contract.")
 
 func _run_counteroffer_tests(errors: Array[String]) -> void:
-	var pending := GameState.pending_contracts()
-	_expect(errors, not pending.is_empty(), "There should be a pending contract for counteroffer tests.")
-	if pending.is_empty():
+	var contract := GameState.get_contract("find_cat")
+	_expect(errors, contract != null, "find_cat should exist for counteroffer tests.")
+	if contract == null:
 		return
-	var contract := pending[0]
 	GameState.select_contract(contract.id)
 	GameState.reveal_all_intel(contract.id)
-	var negotiate := GameState.negotiate_contract(contract.mission.maximum_reasonable_reward)
+	var negotiate := GameState.negotiate_contract(700)
 	_expect(errors, negotiate.get("response", "") == "CounterOffer", "A high but acceptable offer should trigger a counteroffer.")
 	var accept := GameState.accept_counter_offer()
 	_expect(errors, accept.has("ok"), "The client counteroffer should be acceptable.")

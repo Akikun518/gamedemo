@@ -23,10 +23,10 @@
     { "id": "invest_cat_faction", "label": "查询势力", "cost": 1, "intel_id": "collar_company_data" }
   ],
   "intelEntries": [
-    { "id": "cat_owner_nervous", "source": "客户", "description": "委托人说话时眼神躲闪。", "reliability": "中" },
-    { "id": "cat_seen_company_zone", "source": "地点", "description": "有人看到猫出现在公司区附近。", "reliability": "高" },
-    { "id": "someone_searching_collar", "source": "佣兵", "description": "最近有人在高价找这条项圈。", "reliability": "高" },
-    { "id": "collar_company_data", "source": "势力", "description": "项圈上的编号和公司数据吻合。", "reliability": "高" }
+    { "id": "cat_owner_nervous", "source": "客户", "description": "委托人说话时眼神躲闪。", "reliability": "中", "rankAdjustment": 1, "rewardAdjustment": 150, "riskFlags": ["客户隐瞒"] },
+    { "id": "cat_seen_company_zone", "source": "地点", "description": "有人看到猫出现在公司区附近。", "reliability": "高", "rankAdjustment": 1, "rewardAdjustment": 150, "riskFlags": ["公司控制区"] },
+    { "id": "someone_searching_collar", "source": "佣兵", "description": "最近有人在高价找这条项圈。", "reliability": "高", "rankAdjustment": 1, "rewardAdjustment": 150, "riskFlags": ["寻找项圈"] },
+    { "id": "collar_company_data", "source": "势力", "description": "项圈上的编号和公司数据吻合。", "reliability": "高", "rankAdjustment": 1, "rewardAdjustment": 150, "riskFlags": ["公司数据库"] }
   ],
   "unlock": "initial",
   "on_success": { "affection": 2, "reputation": 2, "unlock_intel": ["cat_necklace"] },
