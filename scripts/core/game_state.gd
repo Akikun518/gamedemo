@@ -156,9 +156,9 @@ func lowball_dialogue(mercenary_id: String) -> String:
 	if count >= 3:
 		return "以后这种价格别找我。"
 	if count == 2:
-		return "你最近是不是越来越会算账了？"
+		return "你小子是不是越来越会算账了？"
 	if count == 1:
-		return "钱有点少。"
+		return "这点钱打发乞丐呢？！"
 	return ""
 
 func collect_night_intel() -> Dictionary:

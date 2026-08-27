@@ -61,4 +61,4 @@ text = "状态"
 
 [node name="EndDayButton" type="Button" parent="."]
 layout_mode = 2
-text = "结束这一天"
+text = "结束营业"
