@@ -7,8 +7,8 @@ var _drinks: Array[Dictionary] = []
 var _guests: Array[Dictionary] = []
 
 @onready var drink_label: Label = $DrinkLabel
-@onready var guest_list: VBoxContainer = $GuestList
-@onready var drink_list: VBoxContainer = $DrinkList
+@onready var guest_list: VBoxContainer = $GuestScroll/GuestList
+@onready var drink_list: VBoxContainer = $DrinkScroll/DrinkList
 @onready var status_label: Label = $StatusLabel
 @onready var end_day_button: Button = $EndDayButton
 

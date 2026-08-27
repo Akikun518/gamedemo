@@ -30,18 +30,28 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "客人"
 
-[node name="GuestList" type="VBoxContainer" parent="."]
+[node name="GuestScroll" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="GuestList" type="VBoxContainer" parent="GuestScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="DrinkTitle" type="Label" parent="."]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "调酒"
 
-[node name="DrinkList" type="VBoxContainer" parent="."]
+[node name="DrinkScroll" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(0, 90)
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="DrinkList" type="VBoxContainer" parent="DrinkScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="StatusLabel" type="Label" parent="."]
 layout_mode = 2
