@@ -9,14 +9,27 @@ func resolve(mission: MissionData, team: Array[MercenaryData], start_day: int) -
 
     var max_star := 0
     var team_roles: Array[String] = []
+    var team_stats: Dictionary = {}
     for mercenary in team:
         max_star = maxi(max_star, mercenary.star)
         if not team_roles.has(mercenary.role):
             team_roles.append(mercenary.role)
+        for stat in mercenary.stats:
+            var stat_value := int(mercenary.stats.get(stat, 0))
+            if int(team_stats.get(str(stat), 0)) < stat_value:
+                team_stats[str(stat)] = stat_value
 
     var true_rank_number := int(RANK_NUMBERS.get(mission.true_rank, 1))
     var level_gap := true_rank_number - max_star
-    var success := level_gap < 3
+    var skill_shortfall := 0
+    for required_skill in mission.required_skills:
+        var stat := str(required_skill.get("stat", "combat"))
+        var required_level := int(required_skill.get("level", 1))
+        var team_level := int(team_stats.get(stat, 0))
+        if team_level < required_level:
+            skill_shortfall += required_level - team_level
+
+    var success := level_gap < 3 and skill_shortfall == 0
     var modifier := 0
     if level_gap <= 0:
         modifier -= 1
@@ -30,6 +43,13 @@ func resolve(mission: MissionData, team: Array[MercenaryData], start_day: int) -
             break
     if role_matched:
         modifier -= 1
+
+    var failure_type := "FAILED_NO_CASUALTY"
+    if not success:
+        if skill_shortfall > 0 and true_rank_number >= 3:
+            failure_type = "FAILED_INJURY"
+        else:
+            failure_type = "FAILED_NO_CASUALTY"
 
     var completion_days := 1
     if success:
@@ -68,6 +88,8 @@ func resolve(mission: MissionData, team: Array[MercenaryData], start_day: int) -
         "reward": mission.reward if success else 0,
         "damage": false,
         "death": false,
+        "failure_type": failure_type if not success else "",
+        "skill_shortfall": skill_shortfall,
         "affection_changes": affection_changes,
         "reputation_change": int(consequences.get("reputation", 0)),
         "new_intel": new_intel,

@@ -14,6 +14,7 @@ func _run() -> void:
 	_run_debug_and_night_tests(errors)
 	_run_counteroffer_tests(errors)
 	_run_lowball_tests(errors)
+	_run_skill_tests(errors)
 	await _run_ui_smoke(errors)
 
 	if errors.is_empty():
@@ -198,6 +199,26 @@ func _run_lowball_tests(errors: Array[String]) -> void:
 	GameState.mercenary_lowball_count[merc.id] = 3
 	var attitude := GameState.mercenary_attitude(merc, contract)
 	_expect(errors, attitude.get("attitude", "") == "Refuse", "Three lowballs should make a mercenary refuse.")
+
+func _run_skill_tests(errors: Array[String]) -> void:
+	var resolver := MissionResolver.new()
+	var mission := MissionData.from_json({
+		"id": "skill_probe", "title": "技能测试", "true_rank": "B", "base_days": 2,
+		"time_limit_days": 3, "unlimited": false, "tags": [],
+		"required_skills": [{"stat": "hacking", "level": 6}],
+	})
+	var good_hacker := MercenaryData.from_json({
+		"id": "good_hacker", "name": "好黑客", "role": "hacker", "star": 4,
+		"stats": {"hacking": 9, "combat": 2, "persuasion": 2, "agility": 4, "cyberware": 5},
+		"likes": [], "dislikes": [], "alive": true, "unlock": "initial",
+	})
+	var bad_hacker := MercenaryData.from_json({
+		"id": "bad_hacker", "name": "差黑客", "role": "hacker", "star": 2,
+		"stats": {"hacking": 3, "combat": 3, "persuasion": 3, "agility": 3, "cyberware": 3},
+		"likes": [], "dislikes": [], "alive": true, "unlock": "initial",
+	})
+	_expect(errors, bool(resolver.resolve(mission, [good_hacker], 1).get("success", false)), "A skilled hacker should meet the required skill.")
+	_expect(errors, not bool(resolver.resolve(mission, [bad_hacker], 1).get("success", true)), "An under-skilled hacker should fail the required skill.")
 
 func _first_accepting_mercenary(contract: Contract) -> MercenaryData:
 	for mercenary in GameState.available_mercenaries():

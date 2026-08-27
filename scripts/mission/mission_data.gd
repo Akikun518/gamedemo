@@ -5,6 +5,24 @@ const RANK_NUMBERS := {"D": 1, "C": 2, "B": 3, "A": 4, "S": 5}
 const RANKS := ["D", "C", "B", "A", "S"]
 const NEGOTIATION_LIMITED_THRESHOLD := 0.40
 const NEGOTIATION_FULL_THRESHOLD := 0.70
+const ROLE_STATS := {
+    "driver": "agility",
+    "hacker": "hacking",
+    "assault": "combat",
+    "negotiator": "persuasion",
+    "stealth": "agility",
+    "heavy": "combat",
+    "medic": "cyberware",
+}
+const ROLE_SKILL_LEVELS := {
+    "driver": 4,
+    "hacker": 6,
+    "assault": 5,
+    "negotiator": 6,
+    "stealth": 5,
+    "heavy": 6,
+    "medic": 5,
+}
 
 var id := ""
 var title := ""
@@ -71,10 +89,18 @@ static func from_json(record: Dictionary) -> MissionData:
 
     if record.has("required_skills"):
         for skill in record.get("required_skills", []) as Array:
-            data.required_skills.append(skill as Dictionary)
+            var parsed_skill := skill as Dictionary
+            if not parsed_skill.has("stat"):
+                parsed_skill["stat"] = str(ROLE_STATS.get(str(parsed_skill.get("role", "")), "combat"))
+            if not parsed_skill.has("level"):
+                parsed_skill["level"] = int(ROLE_SKILL_LEVELS.get(str(parsed_skill.get("role", "")), 1))
+            data.required_skills.append(parsed_skill)
     else:
         for role in data.required_roles:
-            data.required_skills.append({"role": role, "level": 0})
+            data.required_skills.append({
+                "stat": str(ROLE_STATS.get(role, "combat")),
+                "level": int(ROLE_SKILL_LEVELS.get(role, 1)),
+            })
 
     for condition in record.get("hiddenConditions", []) as Array:
         data.hidden_conditions.append(str(condition))
