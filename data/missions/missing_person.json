@@ -1,0 +1,16 @@
+{
+  "id": "missing_person",
+  "title": "失踪者",
+  "client": "neighbor",
+  "surface_rank": "C",
+  "true_rank": "D",
+  "required_roles": [],
+  "reward": 120,
+  "base_days": 1,
+  "tags": ["rescue", "talk", "neighbor"],
+  "time_limit_days": 3,
+  "unlimited": false,
+  "unlock": "initial",
+  "on_success": { "affection": 3, "reputation": 3 },
+  "on_failure": { "affection": -5, "reputation": -5 }
+}

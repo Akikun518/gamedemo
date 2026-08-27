@@ -1,0 +1,15 @@
+{
+  "id": "viktor",
+  "name": "维克多",
+  "role": "heavy",
+  "star": 4,
+  "stats": { "combat": 9, "hacking": 2, "persuasion": 2, "agility": 4, "cyberware": 9 },
+  "affection": 0,
+  "price": 700,
+  "personality": "冷漠",
+  "likes": ["combat", "prototype", "money"],
+  "dislikes": [],
+  "taboo": "每单后需额外维护费",
+  "alive": true,
+  "unlock": "initial"
+}

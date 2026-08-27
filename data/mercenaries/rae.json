@@ -1,0 +1,15 @@
+{
+  "id": "rae",
+  "name": "刀锋",
+  "role": "stealth",
+  "star": 4,
+  "stats": { "combat": 6, "hacking": 5, "persuasion": 3, "agility": 9, "cyberware": 5 },
+  "affection": 0,
+  "price": 500,
+  "personality": "冷静寡言",
+  "likes": ["stealth", "prototype", "rescue"],
+  "dislikes": ["kidnap"],
+  "taboo": "不接受绑架",
+  "alive": true,
+  "unlock": "initial"
+}

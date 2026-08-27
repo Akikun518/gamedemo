@@ -1,0 +1,16 @@
+{
+  "id": "data_heist",
+  "title": "数据窃取",
+  "client": "siren",
+  "surface_rank": "B",
+  "true_rank": "A",
+  "required_roles": ["hacker"],
+  "reward": 500,
+  "base_days": 2,
+  "tags": ["data", "hack", "corporate"],
+  "time_limit_days": 4,
+  "unlimited": false,
+  "unlock": "initial",
+  "on_success": { "affection": 4, "reputation": 5, "unlock_intel": ["prism_ai"] },
+  "on_failure": { "affection": -8, "reputation": -8 }
+}

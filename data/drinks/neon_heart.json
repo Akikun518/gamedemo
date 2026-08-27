@@ -1,0 +1,11 @@
+{
+  "id": "neon_heart",
+  "name": "霓虹之心",
+  "ref": "Negroni",
+  "taste": ["苦", "甜"],
+  "alcohol": 4,
+  "audience": ["boss", "veteran"],
+  "ingredients": ["金酒", "苦艾酒", "金巴利"],
+  "unlock": "initial",
+  "intel_effect": "deep_talk"
+}

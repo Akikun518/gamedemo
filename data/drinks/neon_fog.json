@@ -1,0 +1,11 @@
+{
+  "id": "neon_fog",
+  "name": "霓虹迷雾",
+  "ref": "Moscow Mule",
+  "taste": ["清爽", "微辛"],
+  "alcohol": 3,
+  "audience": ["neighbor", "common"],
+  "ingredients": ["伏特加", "姜汁啤酒", "青柠"],
+  "unlock": "initial",
+  "intel_effect": "basic_relax"
+}

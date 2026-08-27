@@ -1,0 +1,11 @@
+{
+  "id": "chrome_tears",
+  "name": "义体之泪",
+  "ref": "Blue Lagoon",
+  "taste": ["清爽", "甜"],
+  "alcohol": 2,
+  "audience": ["cyberware", "mercenary"],
+  "ingredients": ["蓝橙酒", "伏特加", "柠檬水"],
+  "unlock": "initial",
+  "intel_effect": "cyberware_talk"
+}

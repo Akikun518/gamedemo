@@ -1,0 +1,15 @@
+{
+  "id": "manniu",
+  "name": "蛮牛",
+  "role": "assault",
+  "star": 3,
+  "stats": { "combat": 8, "hacking": 1, "persuasion": 2, "agility": 3, "cyberware": 6 },
+  "affection": 0,
+  "price": 350,
+  "personality": "贪钱",
+  "likes": ["combat", "money"],
+  "dislikes": ["civilian"],
+  "taboo": "不杀平民",
+  "alive": true,
+  "unlock": "initial"
+}

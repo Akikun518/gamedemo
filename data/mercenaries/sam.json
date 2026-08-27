@@ -1,0 +1,15 @@
+{
+  "id": "sam",
+  "name": "萨姆",
+  "role": "negotiator",
+  "star": 3,
+  "stats": { "combat": 3, "hacking": 4, "persuasion": 9, "agility": 5, "cyberware": 3 },
+  "affection": 0,
+  "price": 300,
+  "personality": "油滑",
+  "likes": ["talk", "negotiate"],
+  "dislikes": ["night_owl"],
+  "taboo": "讨厌夜枭",
+  "alive": true,
+  "unlock": "initial"
+}

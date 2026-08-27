@@ -1,0 +1,16 @@
+{
+  "id": "proto_heist",
+  "title": "偷义体原型",
+  "client": "white_noise",
+  "surface_rank": "A",
+  "true_rank": "S",
+  "required_roles": ["stealth", "hacker"],
+  "reward": 1000,
+  "base_days": 3,
+  "tags": ["prototype", "stealth", "prism", "heist"],
+  "time_limit_days": 5,
+  "unlimited": false,
+  "unlock": "initial",
+  "on_success": { "affection": 5, "reputation": 6, "unlock_intel": ["proto_lead"] },
+  "on_failure": { "affection": -10, "reputation": -10 }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "cyber_breeze",
+  "name": "赛博海风",
+  "ref": "Sea Breeze",
+  "taste": ["酸甜", "果味"],
+  "alcohol": 2,
+  "audience": ["corporate", "common"],
+  "ingredients": ["伏特加", "蔓越莓汁", "西柚汁"],
+  "unlock": "initial",
+  "intel_effect": "corporate_relax"
+}

@@ -1,0 +1,34 @@
+{
+  "id": "find_cat",
+  "title": "寻找失踪的猫",
+  "client": "neighbor",
+  "surface_rank": "D",
+  "true_rank": "B",
+  "required_roles": [],
+  "reward": 150,
+  "surfaceReward": 150,
+  "minimumReasonableReward": 100,
+  "recommendedReward": 600,
+  "maximumReasonableReward": 1000,
+  "expirationDays": 5,
+  "base_days": 1,
+  "tags": ["cat", "neighbor"],
+  "time_limit_days": 2,
+  "unlimited": false,
+  "hiddenConditions": ["公司介入", "数据载体", "潜在武装人员"],
+  "investigationOptions": [
+    { "id": "invest_cat_client", "label": "调查客户", "cost": 1, "intel_id": "cat_owner_nervous" },
+    { "id": "invest_cat_location", "label": "调查地点", "cost": 1, "intel_id": "cat_seen_company_zone" },
+    { "id": "invest_cat_mercenary", "label": "询问佣兵", "cost": 1, "intel_id": "someone_searching_collar" },
+    { "id": "invest_cat_faction", "label": "查询势力", "cost": 1, "intel_id": "collar_company_data" }
+  ],
+  "intelEntries": [
+    { "id": "cat_owner_nervous", "source": "客户", "description": "委托人说话时眼神躲闪。", "reliability": "中" },
+    { "id": "cat_seen_company_zone", "source": "地点", "description": "有人看到猫出现在公司区附近。", "reliability": "高" },
+    { "id": "someone_searching_collar", "source": "佣兵", "description": "最近有人在高价找这条项圈。", "reliability": "高" },
+    { "id": "collar_company_data", "source": "势力", "description": "项圈上的编号和公司数据吻合。", "reliability": "高" }
+  ],
+  "unlock": "initial",
+  "on_success": { "affection": 2, "reputation": 2, "unlock_intel": ["cat_necklace"] },
+  "on_failure": { "affection": -5, "reputation": -5 }
+}

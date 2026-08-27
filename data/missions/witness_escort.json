@@ -1,0 +1,16 @@
+{
+  "id": "witness_escort",
+  "title": "护送证人",
+  "client": "neighbor",
+  "surface_rank": "C",
+  "true_rank": "B",
+  "required_roles": ["assault", "driver"],
+  "reward": 300,
+  "base_days": 1,
+  "tags": ["escort", "combat", "vehicle"],
+  "time_limit_days": 3,
+  "unlimited": false,
+  "unlock": "initial",
+  "on_success": { "affection": 3, "reputation": 4 },
+  "on_failure": { "affection": -7, "reputation": -7 }
+}

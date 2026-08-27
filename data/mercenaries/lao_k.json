@@ -1,0 +1,15 @@
+{
+  "id": "lao_k",
+  "name": "老K",
+  "role": "hacker",
+  "star": 4,
+  "stats": { "combat": 3, "hacking": 9, "persuasion": 5, "agility": 4, "cyberware": 5 },
+  "affection": 0,
+  "price": 500,
+  "personality": "谨慎",
+  "likes": ["data", "hack"],
+  "dislikes": ["prism"],
+  "taboo": "极度厌恶棱镜工业",
+  "alive": true,
+  "unlock": "initial"
+}

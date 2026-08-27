@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/evening/evening_panel.gd" id="1_evening"]
+
+[node name="EveningPanel" type="VBoxContainer"]
+layout_mode = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_evening")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "晚上 · 酒吧（M2 预留）"
+
+[node name="DrinkLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+autowrap_mode = 2
+text = "配方"
+
+[node name="EveningNote" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+autowrap_mode = 2
+text = "M0 只验证一天状态机能进入并离开晚上；调酒、对话和情报获取将在 M2 实现。"
+
+[node name="CollectIntelButton" type="Button" parent="."]
+layout_mode = 2
+text = "收集一条酒吧情报"
+
+[node name="EndDayButton" type="Button" parent="."]
+layout_mode = 2
+text = "结束这一天"
+
+[connection signal="pressed" from="CollectIntelButton" to="." method="_on_collect_intel_button_pressed"]
+[connection signal="pressed" from="EndDayButton" to="." method="_on_end_day_button_pressed"]

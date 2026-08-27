@@ -1,0 +1,15 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Secrets / local configuration
+secrets.gd
+secrets.gd.uid
+.env
+.env.*
+*.local
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+*.log

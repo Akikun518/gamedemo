@@ -1,0 +1,15 @@
+{
+  "id": "luo",
+  "name": "洛",
+  "role": "driver",
+  "star": 3,
+  "stats": { "combat": 5, "hacking": 3, "persuasion": 4, "agility": 7, "cyberware": 4 },
+  "affection": 0,
+  "price": 300,
+  "personality": "爱炫技",
+  "likes": ["vehicle", "heist", "cat"],
+  "dislikes": ["suicide"],
+  "taboo": "不接自杀式任务",
+  "alive": true,
+  "unlock": "initial"
+}

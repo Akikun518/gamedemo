@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/morning/morning_panel.gd" id="1_morning"]
+
+[node name="MorningPanel" type="VBoxContainer"]
+layout_mode = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_morning")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "FIXER TERMINAL"
+
+[node name="StatsLabel" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "资金：0   信誉：0   调查点：3"
+
+[node name="ContentScroll" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Content" type="VBoxContainer" parent="ContentScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 2
+text = "返回"
+
+[node name="DebugButton" type="Button" parent="."]
+layout_mode = 2
+text = "Debug"
+
+[node name="EndMorningButton" type="Button" parent="."]
+layout_mode = 2
+text = "结束白天"
+
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="DebugButton" to="." method="_on_debug_button_pressed"]
+[connection signal="pressed" from="EndMorningButton" to="." method="_on_end_morning_button_pressed"]

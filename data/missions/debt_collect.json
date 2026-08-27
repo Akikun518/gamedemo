@@ -1,0 +1,16 @@
+{
+  "id": "debt_collect",
+  "title": "讨债",
+  "client": "neighbor",
+  "surface_rank": "D",
+  "true_rank": "C",
+  "required_roles": [],
+  "reward": 150,
+  "base_days": 1,
+  "tags": ["money", "negotiate", "neighbor"],
+  "time_limit_days": 2,
+  "unlimited": false,
+  "unlock": "initial",
+  "on_success": { "affection": 3, "reputation": 3, "unlock_intel": ["debt_gang"] },
+  "on_failure": { "affection": -6, "reputation": -6 }
+}

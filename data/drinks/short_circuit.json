@@ -1,0 +1,11 @@
+{
+  "id": "short_circuit",
+  "name": "电路短路",
+  "ref": "长岛冰茶",
+  "taste": ["烈", "甜苦"],
+  "alcohol": 5,
+  "audience": ["mercenary", "common"],
+  "ingredients": ["伏特加", "朗姆酒", "金酒", "可乐"],
+  "unlock": "initial",
+  "intel_effect": "loose_lips"
+}

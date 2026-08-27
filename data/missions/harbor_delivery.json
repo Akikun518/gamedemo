@@ -1,0 +1,16 @@
+{
+  "id": "harbor_delivery",
+  "title": "送货到码头",
+  "client": "night_owl",
+  "surface_rank": "C",
+  "true_rank": "B",
+  "required_roles": ["driver"],
+  "reward": 250,
+  "base_days": 1,
+  "tags": ["vehicle", "delivery", "night_owl"],
+  "time_limit_days": 3,
+  "unlimited": false,
+  "unlock": "initial",
+  "on_success": { "affection": 3, "reputation": 4 },
+  "on_failure": { "affection": -7, "reputation": -7 }
+}

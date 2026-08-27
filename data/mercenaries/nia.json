@@ -1,0 +1,15 @@
+{
+  "id": "nia",
+  "name": "妮娅",
+  "role": "hacker",
+  "star": 2,
+  "stats": { "combat": 2, "hacking": 7, "persuasion": 3, "agility": 5, "cyberware": 3 },
+  "affection": 0,
+  "price": 150,
+  "personality": "社恐",
+  "likes": ["data", "prototype"],
+  "dislikes": ["corporate"],
+  "taboo": "前期不接公司网络任务",
+  "alive": true,
+  "unlock": "initial"
+}

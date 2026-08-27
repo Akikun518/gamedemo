@@ -1,0 +1,16 @@
+{
+  "id": "side_hook",
+  "title": "深夜来信",
+  "client": "neighbor",
+  "surface_rank": "B",
+  "true_rank": "B",
+  "required_roles": [],
+  "reward": 400,
+  "base_days": 2,
+  "tags": ["talk", "mystery"],
+  "time_limit_days": 4,
+  "unlimited": false,
+  "unlock": "initial",
+  "on_success": { "affection": 4, "reputation": 4 },
+  "on_failure": { "affection": -6, "reputation": -6 }
+}

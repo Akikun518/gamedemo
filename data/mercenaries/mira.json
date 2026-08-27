@@ -1,0 +1,15 @@
+{
+  "id": "mira",
+  "name": "米拉",
+  "role": "medic",
+  "star": 3,
+  "stats": { "combat": 3, "hacking": 3, "persuasion": 6, "agility": 4, "cyberware": 4 },
+  "affection": 0,
+  "price": 300,
+  "personality": "温和",
+  "likes": ["rescue", "escort"],
+  "dislikes": ["kill"],
+  "taboo": "拒绝灭口任务",
+  "alive": true,
+  "unlock": "initial"
+}
