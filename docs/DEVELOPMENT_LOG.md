@@ -94,3 +94,39 @@ GitHub Push：
 
 下一步：
 - Phase 7：夜晚最小情报闭环。
+
+## M0.2.4
+
+日期：2026-08-27
+
+目标：夜晚最小情报闭环。
+
+完成：
+- 新增 3 个酒吧客人数据。
+- 晚上可选择客人并调酒，给对酒会解锁相关 Intel，给错酒不会解锁。
+- 解锁的 Intel 会进入 IntelDatabase，并在第二天相关委托上标记 NEW INTEL。
+
+修改：
+- data/guests/regular.json
+- data/guests/hacker.json
+- data/guests/driver.json
+- scripts/core/game_state.gd
+- scripts/evening/evening_panel.gd
+- scenes/evening/evening_panel.tscn
+- scripts/ui/main_view.gd
+- tests/m0_headless_test.gd
+
+测试：
+- `godot --headless res://tests/m0_headless_test.tscn` 通过。
+
+Git Commit：
+- 待提交。
+
+GitHub Push：
+- 待推送。
+
+已知问题：
+- 夜晚客人还比较简化，后续可扩展对话树。
+
+下一步：
+- 文档同步与整体验收。

@@ -9,6 +9,7 @@ var compensation_due := 0
 
 var selected_mercenary_ids: Array[String] = []
 var selected_contract_id := ""
+var selected_guest_id := ""
 var investigation_points := 3
 var debug_mode := false
 var debug_mercenary_override: Dictionary = {}
@@ -23,6 +24,7 @@ var latest_result: Dictionary = {}
 var mercenary_manager: MercenaryManager
 var mission_manager: MissionManager
 var drink_records: Array[Dictionary] = []
+var guest_records: Array[Dictionary] = []
 var faction_records: Array[Dictionary] = []
 var intel_records: Array[Dictionary] = []
 
@@ -37,6 +39,7 @@ func _ready() -> void:
 	mercenary_manager = MercenaryManager.new(DataRepository.load_records("res://data/mercenaries"))
 	mission_manager = MissionManager.new(DataRepository.load_records("res://data/missions"))
 	drink_records = DataRepository.load_records("res://data/drinks")
+	guest_records = DataRepository.load_records("res://data/guests")
 	faction_records = DataRepository.load_records("res://data/factions")
 	intel_records = DataRepository.load_records("res://data/intel")
 	for record in intel_records:
@@ -58,6 +61,33 @@ func available_missions() -> Array[MissionData]:
 
 func available_drinks() -> Array[Dictionary]:
 	return drink_records
+
+func guests() -> Array[Dictionary]:
+	return guest_records
+
+func select_guest(guest_id: String) -> void:
+	selected_guest_id = guest_id
+	state_changed.emit()
+
+func serve_drink(drink_id: String) -> Dictionary:
+	if selected_guest_id.is_empty():
+		return {"error": "请先选择客人。"}
+	var guest := {}
+	for candidate in guest_records:
+		if str(candidate.get("id", "")) == selected_guest_id:
+			guest = candidate
+			break
+	if guest.is_empty():
+		return {"error": "未知客人。"}
+	var preferred := str(guest.get("preferred_drink", ""))
+	if preferred != drink_id:
+		return {"ok": false, "correct": false, "message": "客人不太满意这杯酒。"}
+	var intel_id := str(guest.get("intel_id", ""))
+	if not known_intel.has(intel_id):
+		known_intel.append(intel_id)
+	_refresh_night_intel()
+	state_changed.emit()
+	return {"ok": true, "correct": true, "message": str(guest.get("dialogue", "客人说了一些有用的信息。")), "intel_id": intel_id}
 
 func set_debug_mode(enabled: bool) -> void:
 	debug_mode = enabled

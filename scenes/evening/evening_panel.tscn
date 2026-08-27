@@ -18,28 +18,37 @@ script = ExtResource("1_evening")
 [node name="Title" type="Label" parent="."]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "晚上 · 酒吧（M2 预留）"
+text = "晚上 · 酒吧"
 
 [node name="DrinkLabel" type="Label" parent="."]
-unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "第 1 天晚上"
+
+[node name="GuestTitle" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "客人"
+
+[node name="GuestList" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DrinkTitle" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "调酒"
+
+[node name="DrinkList" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StatusLabel" type="Label" parent="."]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 autowrap_mode = 2
-text = "配方"
-
-[node name="EveningNote" type="Label" parent="."]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-autowrap_mode = 2
-text = "M0 只验证一天状态机能进入并离开晚上；调酒、对话和情报获取将在 M2 实现。"
-
-[node name="CollectIntelButton" type="Button" parent="."]
-layout_mode = 2
-text = "收集一条酒吧情报"
+text = "状态"
 
 [node name="EndDayButton" type="Button" parent="."]
 layout_mode = 2
 text = "结束这一天"
-
-[connection signal="pressed" from="CollectIntelButton" to="." method="_on_collect_intel_button_pressed"]
-[connection signal="pressed" from="EndDayButton" to="." method="_on_end_day_button_pressed"]

@@ -34,7 +34,7 @@ func _refresh() -> void:
         TimeSystem.EVENING:
             var evening := EVENING_PANEL.instantiate()
             phase_host.add_child(evening)
-            evening.setup(GameState.available_drinks()[0], GameState.current_day)
+            evening.setup(GameState.available_drinks(), GameState.guests(), GameState.current_day)
             evening.end_day_requested.connect(_on_end_day_requested)
         _:
             pass

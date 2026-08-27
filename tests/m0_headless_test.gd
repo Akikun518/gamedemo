@@ -15,6 +15,7 @@ func _run() -> void:
 	_run_counteroffer_tests(errors)
 	_run_lowball_tests(errors)
 	_run_skill_tests(errors)
+	_run_night_loop_tests(errors)
 	await _run_ui_smoke(errors)
 
 	if errors.is_empty():
@@ -219,6 +220,15 @@ func _run_skill_tests(errors: Array[String]) -> void:
 	})
 	_expect(errors, bool(resolver.resolve(mission, [good_hacker], 1).get("success", false)), "A skilled hacker should meet the required skill.")
 	_expect(errors, not bool(resolver.resolve(mission, [bad_hacker], 1).get("success", true)), "An under-skilled hacker should fail the required skill.")
+
+func _run_night_loop_tests(errors: Array[String]) -> void:
+	GameState.select_guest("regular")
+	var correct := GameState.serve_drink("neon_fog")
+	_expect(errors, bool(correct.get("correct", false)), "Serving the preferred drink should unlock intel.")
+	_expect(errors, GameState.known_intel.has("cat_necklace"), "The guest intel should enter the IntelDatabase.")
+	GameState.select_guest("regular")
+	var wrong := GameState.serve_drink("short_circuit")
+	_expect(errors, not bool(wrong.get("correct", true)), "Serving the wrong drink should not unlock intel.")
 
 func _first_accepting_mercenary(contract: Contract) -> MercenaryData:
 	for mercenary in GameState.available_mercenaries():
