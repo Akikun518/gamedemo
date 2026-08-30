@@ -6,6 +6,8 @@ var current_phase := TimeSystem.MORNING
 var money := 500
 var reputation := 0
 var compensation_due := 0
+var stamina := 4
+var max_stamina := 4
 
 var selected_mercenary_ids: Array[String] = []
 var selected_contract_id := ""
@@ -25,6 +27,7 @@ var mercenary_manager: MercenaryManager
 var mission_manager: MissionManager
 var drink_records: Array[Dictionary] = []
 var guest_records: Array[Dictionary] = []
+var guest_states: Dictionary = {}
 var faction_records: Array[Dictionary] = []
 var intel_records: Array[Dictionary] = []
 
@@ -69,25 +72,118 @@ func select_guest(guest_id: String) -> void:
 	selected_guest_id = guest_id
 	state_changed.emit()
 
-func serve_drink(drink_id: String) -> Dictionary:
-	if selected_guest_id.is_empty():
-		return {"error": "请先选择客人。"}
-	var guest := {}
-	for candidate in guest_records:
-		if str(candidate.get("id", "")) == selected_guest_id:
-			guest = candidate
-			break
+func guest_by_id(guest_id: String) -> Dictionary:
+	for guest in guest_records:
+		if str(guest.get("id", "")) == guest_id:
+			return guest
+	return {}
+
+func guest_state(guest_id: String) -> Dictionary:
+	if not guest_states.has(guest_id):
+		guest_states[guest_id] = {
+			"relationship_stage": 0,
+			"affection": 0,
+			"visit_count": 0,
+			"memory": [],
+		}
+	return guest_states.get(guest_id, {}) as Dictionary
+
+func social_class_cost(social_class: String) -> int:
+	match social_class:
+		"HighStatus", "Special":
+			return 3
+		"CorporateEmployee", "GangMember":
+			return 2
+		_:
+			return 1
+
+func relationship_stage(affection: int) -> int:
+	return clampi(affection / 20, 0, 5)
+
+func serve_drink(guest_id: String, drink_id: String) -> Dictionary:
+	var guest := guest_by_id(guest_id)
 	if guest.is_empty():
 		return {"error": "未知客人。"}
-	var preferred := str(guest.get("preferred_drink", ""))
-	if preferred != drink_id:
-		return {"ok": false, "correct": false, "message": "客人不太满意这杯酒。"}
-	var intel_id := str(guest.get("intel_id", ""))
-	if not known_intel.has(intel_id):
+	var drink := {}
+	for candidate in drink_records:
+		if str(candidate.get("id", "")) == drink_id:
+			drink = candidate
+			break
+	if drink.is_empty():
+		return {"error": "未知酒。"}
+
+	var taste: Array = drink.get("taste", []) as Array
+	var favorite: Array = guest.get("favorite_tags", []) as Array
+	var disliked: Array = guest.get("disliked_tags", []) as Array
+
+	var reaction_tier := "Acceptable"
+	var relationship_delta := 0
+	var message := "客人收下了这杯酒。"
+	var intel_id := ""
+
+	var liked := false
+	for tag in taste:
+		if favorite.has(tag):
+			liked = true
+			break
+	var hated := false
+	for tag in taste:
+		if disliked.has(tag):
+			hated = true
+			break
+
+	if hated:
+		reaction_tier = "Wrong"
+		relationship_delta = -1
+		message = "客人不太满意这杯酒。"
+	elif liked:
+		reaction_tier = "Perfect"
+		relationship_delta = 2
+		message = str(guest.get("dialogue", "客人明显愿意多聊几句。"))
+		intel_id = str(guest.get("intel_id", ""))
+	else:
+		reaction_tier = "Acceptable"
+		relationship_delta = 1
+		message = "客人说了一些日常话题。"
+
+	var state := guest_state(guest_id)
+	state["affection"] = clampi(int(state.get("affection", 0)) + relationship_delta, 0, 100)
+	state["visit_count"] = int(state.get("visit_count", 0)) + 1
+	var memory: Array = state.get("memory", []) as Array
+	memory.append("%s_%s" % [drink_id, reaction_tier.to_lower()])
+	state["memory"] = memory
+
+	if intel_id != "" and not known_intel.has(intel_id):
 		known_intel.append(intel_id)
-	_refresh_night_intel()
+		_refresh_night_intel()
 	state_changed.emit()
-	return {"ok": true, "correct": true, "message": str(guest.get("dialogue", "客人说了一些有用的信息。")), "intel_id": intel_id}
+	return {
+		"ok": true,
+		"reaction_tier": reaction_tier,
+		"relationship_delta": relationship_delta,
+		"dialogue": message,
+		"intel_id": intel_id,
+		"affection": int(state.get("affection", 0)),
+	}
+
+func deep_talk(guest_id: String) -> Dictionary:
+	var guest := guest_by_id(guest_id)
+	if guest.is_empty():
+		return {"error": "未知客人。"}
+	var cost := social_class_cost(str(guest.get("social_class", "Civilian")))
+	if stamina < cost:
+		return {"error": "精力不足，无法深入交流。", "cost": cost}
+	stamina -= cost
+	var state := guest_state(guest_id)
+	state["affection"] = clampi(int(state.get("affection", 0)) + 3, 0, 100)
+	state_changed.emit()
+	return {
+		"ok": true,
+		"cost": cost,
+		"stamina_left": stamina,
+		"relationship_stage": relationship_stage(int(state.get("affection", 0))),
+		"dialogue": "你花时间认真听 ta 说话，关系更近了一点。",
+	}
 
 func set_debug_mode(enabled: bool) -> void:
 	debug_mode = enabled
@@ -156,9 +252,9 @@ func lowball_dialogue(mercenary_id: String) -> String:
 	if count >= 3:
 		return "以后这种价格别找我。"
 	if count == 2:
-		return "你小子是不是越来越会算账了？"
+		return "你最近是不是越来越会算账了？"
 	if count == 1:
-		return "这点钱打发乞丐呢？！"
+		return "钱有点少。"
 	return ""
 
 func collect_night_intel() -> Dictionary:
@@ -466,6 +562,7 @@ func end_evening() -> bool:
 	current_day += 1
 	current_phase = TimeSystem.MORNING
 	investigation_points = 3
+	stamina = max_stamina
 	selected_mercenary_ids.clear()
 	EventBus.day_advanced.emit(current_day)
 	_tick_contract_expiration()

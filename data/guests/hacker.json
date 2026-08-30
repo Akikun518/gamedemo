@@ -1,7 +1,9 @@
 {
   "id": "hacker",
   "name": "落魄黑客",
-  "preferred_drink": "short_circuit",
+  "social_class": "Mercenary",
+  "favorite_tags": ["烈", "甜苦"],
+  "disliked_tags": ["酸甜"],
   "intel_id": "prism_ai",
   "dialogue": "黑客说棱镜的反入侵系统最近升级过，硬闯会被反追踪。"
 }

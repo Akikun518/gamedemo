@@ -223,12 +223,11 @@ func _run_skill_tests(errors: Array[String]) -> void:
 
 func _run_night_loop_tests(errors: Array[String]) -> void:
 	GameState.select_guest("regular")
-	var correct := GameState.serve_drink("neon_fog")
-	_expect(errors, bool(correct.get("correct", false)), "Serving the preferred drink should unlock intel.")
+	var correct := GameState.serve_drink("regular", "neon_fog")
+	_expect(errors, correct.get("reaction_tier", "") == "Perfect", "Serving the favorite drink should be Perfect.")
 	_expect(errors, GameState.known_intel.has("cat_necklace"), "The guest intel should enter the IntelDatabase.")
-	GameState.select_guest("regular")
-	var wrong := GameState.serve_drink("short_circuit")
-	_expect(errors, not bool(wrong.get("correct", true)), "Serving the wrong drink should not unlock intel.")
+	var wrong := GameState.serve_drink("regular", "short_circuit")
+	_expect(errors, wrong.get("reaction_tier", "") == "Wrong", "Serving a disliked drink should be Wrong.")
 
 func _first_accepting_mercenary(contract: Contract) -> MercenaryData:
 	for mercenary in GameState.available_mercenaries():

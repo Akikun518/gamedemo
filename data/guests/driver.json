@@ -1,7 +1,9 @@
 {
   "id": "driver",
   "name": "货运司机",
-  "preferred_drink": "cyber_breeze",
+  "social_class": "Civilian",
+  "favorite_tags": ["酸甜", "果味"],
+  "disliked_tags": ["微辛"],
   "intel_id": "debt_gang",
   "dialogue": "司机提到欠债人背后有帮派罩着，不是普通讨债。"
 }

@@ -130,3 +130,40 @@ GitHub Push：
 
 下一步：
 - 文档同步与整体验收。
+
+## M0.3.1
+
+日期：2026-08-30
+
+目标：夜晚酒吧核心玩法第一阶段。
+
+完成：
+- 调酒结果从对/错升级为 Perfect / Acceptable / Wrong。
+- 客人数据加入 social_class、favorite_tags、disliked_tags。
+- 新增精力系统：默认 4 点，按社会身份消耗，0 点仍可普通接待但不能 DeepTalk。
+- 新增客人状态：relationship_stage、affection、visit_count、memory。
+- 新增 deep_talk 接口，返回关系阶段和剩余精力。
+
+修改：
+- data/guests/regular.json
+- data/guests/hacker.json
+- data/guests/driver.json
+- scripts/core/game_state.gd
+- scripts/evening/evening_panel.gd
+- scenes/evening/evening_panel.tscn
+- tests/m0_headless_test.gd
+
+测试：
+- `godot --headless res://tests/m0_headless_test.tscn` 通过。
+
+Git Commit：
+- 待提交。
+
+GitHub Push：
+- 待推送。
+
+已知问题：
+- IntelInventory、交易、对话树尚未接入。
+
+下一步：
+- Phase D：IntelInventory 与情报交易。
