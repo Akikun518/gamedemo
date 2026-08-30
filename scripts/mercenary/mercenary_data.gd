@@ -12,6 +12,8 @@ var personality := ""
 var taboo := ""
 var likes: Array[String] = []
 var dislikes: Array[String] = []
+var guest_profile: Dictionary = {}
+var relationships: Dictionary = {}
 var alive := true
 var unlock := "initial"
 
@@ -30,6 +32,8 @@ static func from_json(record: Dictionary) -> MercenaryData:
         data.likes.append(str(like))
     for dislike in record.get("dislikes", []) as Array:
         data.dislikes.append(str(dislike))
+    data.guest_profile = record.get("guest", {}) as Dictionary
+    data.relationships = record.get("relationships", {}) as Dictionary
     data.alive = bool(record.get("alive", true))
     data.unlock = str(record.get("unlock", "initial"))
     return data

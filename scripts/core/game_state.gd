@@ -42,9 +42,9 @@ func _ready() -> void:
 	mercenary_manager = MercenaryManager.new(DataRepository.load_records("res://data/mercenaries"))
 	mission_manager = MissionManager.new(DataRepository.load_records("res://data/missions"))
 	drink_records = DataRepository.load_records("res://data/drinks")
-	guest_records = DataRepository.load_records("res://data/guests")
 	faction_records = DataRepository.load_records("res://data/factions")
 	intel_records = DataRepository.load_records("res://data/intel")
+	_build_guest_records()
 	for record in intel_records:
 		_intel_by_id[str(record.get("id", ""))] = record
 	_init_contracts()
@@ -68,6 +68,22 @@ func available_drinks() -> Array[Dictionary]:
 func guests() -> Array[Dictionary]:
 	return guest_records
 
+func _build_guest_records() -> void:
+	guest_records.clear()
+	for mercenary in mercenary_manager.all():
+		if mercenary.guest_profile.is_empty():
+			continue
+		var guest := {
+			"id": mercenary.id,
+			"name": mercenary.display_name,
+			"social_class": str(mercenary.guest_profile.get("social_class", "Mercenary")),
+			"favorite_tags": mercenary.guest_profile.get("favorite_tags", []) as Array,
+			"disliked_tags": mercenary.guest_profile.get("disliked_tags", []) as Array,
+			"intel_id": str(mercenary.guest_profile.get("intel_id", "")),
+			"dialogue": str(mercenary.guest_profile.get("dialogue", "")),
+		}
+		guest_records.append(guest)
+
 func select_guest(guest_id: String) -> void:
 	selected_guest_id = guest_id
 	state_changed.emit()
@@ -81,10 +97,10 @@ func guest_by_id(guest_id: String) -> Dictionary:
 func guest_state(guest_id: String) -> Dictionary:
 	if not guest_states.has(guest_id):
 		guest_states[guest_id] = {
-			"relationship_stage": 0,
-			"affection": 0,
 			"visit_count": 0,
 			"memory": [],
+			"intent": "",
+			"known_intel": [],
 		}
 	return guest_states.get(guest_id, {}) as Dictionary
 
@@ -147,7 +163,9 @@ func serve_drink(guest_id: String, drink_id: String) -> Dictionary:
 		message = "客人说了一些日常话题。"
 
 	var state := guest_state(guest_id)
-	state["affection"] = clampi(int(state.get("affection", 0)) + relationship_delta, 0, 100)
+	var mercenary := mercenary_manager.get_mercenary(guest_id)
+	if mercenary != null:
+		mercenary.affection = clampi(mercenary.affection + relationship_delta, 0, 100)
 	state["visit_count"] = int(state.get("visit_count", 0)) + 1
 	var memory: Array = state.get("memory", []) as Array
 	memory.append("%s_%s" % [drink_id, reaction_tier.to_lower()])
@@ -163,7 +181,7 @@ func serve_drink(guest_id: String, drink_id: String) -> Dictionary:
 		"relationship_delta": relationship_delta,
 		"dialogue": message,
 		"intel_id": intel_id,
-		"affection": int(state.get("affection", 0)),
+		"affection": mercenary.affection if mercenary != null else 0,
 	}
 
 func deep_talk(guest_id: String) -> Dictionary:
@@ -175,13 +193,15 @@ func deep_talk(guest_id: String) -> Dictionary:
 		return {"error": "精力不足，无法深入交流。", "cost": cost}
 	stamina -= cost
 	var state := guest_state(guest_id)
-	state["affection"] = clampi(int(state.get("affection", 0)) + 3, 0, 100)
+	var mercenary := mercenary_manager.get_mercenary(guest_id)
+	if mercenary != null:
+		mercenary.affection = clampi(mercenary.affection + 3, 0, 100)
 	state_changed.emit()
 	return {
 		"ok": true,
 		"cost": cost,
 		"stamina_left": stamina,
-		"relationship_stage": relationship_stage(int(state.get("affection", 0))),
+		"relationship_stage": relationship_stage(mercenary.affection if mercenary != null else 0),
 		"dialogue": "你花时间认真听 ta 说话，关系更近了一点。",
 	}
 

@@ -167,3 +167,39 @@ GitHub Push：
 
 下一步：
 - Phase D：IntelInventory 与情报交易。
+
+## M0.3.5
+
+日期：2026-08-30
+
+目标：统一 Mercenary 与 Guest 的角色数据。
+
+完成：
+- 洛 / 萨姆 / 米拉通过同一 `id` 同时拥有佣兵身份和酒吧顾客身份。
+- 临时占位顾客 regular / hacker / driver 已移除。
+- 顾客记录现在从带 `guest` 字段的佣兵自动生成，不再复制角色。
+- 酒吧互动直接修改佣兵的 `affection`，不再维护两份好感。
+- 保留 guest_states 中的 visit_count / memory / intent / known_intel。
+
+修改：
+- data/mercenaries/luo.json
+- data/mercenaries/sam.json
+- data/mercenaries/mira.json
+- scripts/mercenary/mercenary_data.gd
+- scripts/core/game_state.gd
+- tests/m0_headless_test.gd
+
+测试：
+- `godot --headless res://tests/m0_headless_test.tscn` 通过。
+
+Git Commit：
+- 待提交。
+
+GitHub Push：
+- 待推送。
+
+已知问题：
+- IntelInventory / 交易尚未接入。
+
+下一步：
+- 继续 Phase D。

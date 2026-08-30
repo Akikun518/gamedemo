@@ -10,6 +10,17 @@
   "likes": ["talk", "negotiate"],
   "dislikes": ["night_owl"],
   "taboo": "讨厌夜枭",
+  "guest": {
+    "social_class": "Mercenary",
+    "favorite_tags": ["烈", "甜苦"],
+    "disliked_tags": ["酸甜"],
+    "intel_id": "debt_gang"
+  },
+  "relationships": {
+    "protagonist": 0,
+    "uncle": "high",
+    "hinata": "high"
+  },
   "alive": true,
   "unlock": "initial"
 }

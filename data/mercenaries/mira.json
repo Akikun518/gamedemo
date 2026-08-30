@@ -10,6 +10,17 @@
   "likes": ["rescue", "escort"],
   "dislikes": ["kill"],
   "taboo": "拒绝灭口任务",
+  "guest": {
+    "social_class": "Mercenary",
+    "favorite_tags": ["酸甜", "果味"],
+    "disliked_tags": ["微辛"],
+    "intel_id": "prism_ai"
+  },
+  "relationships": {
+    "protagonist": 0,
+    "uncle": "high",
+    "hinata": "high"
+  },
   "alive": true,
   "unlock": "initial"
 }

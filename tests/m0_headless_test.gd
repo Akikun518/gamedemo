@@ -222,11 +222,11 @@ func _run_skill_tests(errors: Array[String]) -> void:
 	_expect(errors, not bool(resolver.resolve(mission, [bad_hacker], 1).get("success", true)), "An under-skilled hacker should fail the required skill.")
 
 func _run_night_loop_tests(errors: Array[String]) -> void:
-	GameState.select_guest("regular")
-	var correct := GameState.serve_drink("regular", "neon_fog")
+	GameState.select_guest("luo")
+	var correct := GameState.serve_drink("luo", "neon_fog")
 	_expect(errors, correct.get("reaction_tier", "") == "Perfect", "Serving the favorite drink should be Perfect.")
 	_expect(errors, GameState.known_intel.has("cat_necklace"), "The guest intel should enter the IntelDatabase.")
-	var wrong := GameState.serve_drink("regular", "short_circuit")
+	var wrong := GameState.serve_drink("luo", "short_circuit")
 	_expect(errors, wrong.get("reaction_tier", "") == "Wrong", "Serving a disliked drink should be Wrong.")
 
 func _first_accepting_mercenary(contract: Contract) -> MercenaryData:
