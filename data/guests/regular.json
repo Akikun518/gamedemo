@@ -1,9 +1,0 @@
-{
-  "id": "regular",
-  "name": "街坊常客",
-  "social_class": "Civilian",
-  "favorite_tags": ["清爽", "微辛"],
-  "disliked_tags": ["烈"],
-  "intel_id": "cat_necklace",
-  "dialogue": "常客压低声音说，最近有人在找一只戴项圈的猫。"
-}
