@@ -21,6 +21,7 @@ var active_missions: Array[Dictionary] = []
 var resolved_results: Array[Dictionary] = []
 var pending_results: Array[Dictionary] = []
 var known_intel: Array[String] = []
+var intel_inventory: Array[Dictionary] = []
 var latest_result: Dictionary = {}
 
 var mercenary_manager: MercenaryManager
@@ -171,9 +172,8 @@ func serve_drink(guest_id: String, drink_id: String) -> Dictionary:
 	memory.append("%s_%s" % [drink_id, reaction_tier.to_lower()])
 	state["memory"] = memory
 
-	if intel_id != "" and not known_intel.has(intel_id):
-		known_intel.append(intel_id)
-		_refresh_night_intel()
+	if intel_id != "":
+		add_intel_to_inventory(intel_id)
 	state_changed.emit()
 	return {
 		"ok": true,
@@ -504,6 +504,71 @@ func dispatch_contract() -> Dictionary:
 
 func get_intel(id: String) -> Dictionary:
 	return _intel_by_id.get(id, {}) as Dictionary
+
+func intel_item(intel_id: String) -> Dictionary:
+	for item in intel_inventory:
+		if str(item.get("id", "")) == intel_id:
+			return item
+	return {}
+
+func add_intel_to_inventory(intel_id: String) -> Dictionary:
+	var record := _intel_by_id.get(intel_id, {}) as Dictionary
+	if record.is_empty():
+		return {"error": "未知情报。"}
+	if not known_intel.has(intel_id):
+		known_intel.append(intel_id)
+	if intel_item(intel_id).is_empty():
+		intel_inventory.append({
+			"id": intel_id,
+			"content": str(record.get("text", intel_id)),
+			"source": str(record.get("source", "未知")),
+			"reliability": int(record.get("reliability", 3)),
+			"related_mission": str(record.get("related_mission", "")),
+			"related_faction": str(record.get("related_faction", "")),
+			"value": int(record.get("value", 100)),
+			"expiration": int(record.get("expiration", 0)),
+			"status": "Active",
+		})
+	_refresh_night_intel()
+	state_changed.emit()
+	return {"ok": true, "intel_id": intel_id}
+
+func buy_intel(intel_id: String, price: int) -> Dictionary:
+	if money < price:
+		return {"error": "资金不足。"}
+	var record := _intel_by_id.get(intel_id, {}) as Dictionary
+	if record.is_empty():
+		return {"error": "没有这条情报。"}
+	money -= price
+	var added := add_intel_to_inventory(intel_id)
+	if added.has("error"):
+		money += price
+		return added
+	return {"ok": true, "intel_id": intel_id, "cost": price}
+
+func sell_intel(intel_id: String, price: int) -> Dictionary:
+	var item := intel_item(intel_id)
+	if item.is_empty() or str(item.get("status", "")) != "Active":
+		return {"error": "你没有这条可出售的情报。"}
+	item["status"] = "Sold"
+	money += price
+	state_changed.emit()
+	return {"ok": true, "intel_id": intel_id, "earned": price}
+
+func exchange_intel(offer_intel_id: String, receive_intel_id: String) -> Dictionary:
+	var offer := intel_item(offer_intel_id)
+	if offer.is_empty() or str(offer.get("status", "")) != "Active":
+		return {"error": "你没有要交换的情报。"}
+	var record := _intel_by_id.get(receive_intel_id, {}) as Dictionary
+	if record.is_empty():
+		return {"error": "对方没有这条情报。"}
+	offer["status"] = "Traded"
+	var received := add_intel_to_inventory(receive_intel_id)
+	if received.has("error"):
+		offer["status"] = "Active"
+		return received
+	state_changed.emit()
+	return {"ok": true, "offered": offer_intel_id, "received": receive_intel_id}
 
 func toggle_mercenary(id: String) -> void:
 	var index := selected_mercenary_ids.find(id)

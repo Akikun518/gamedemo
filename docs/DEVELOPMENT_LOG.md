@@ -203,3 +203,34 @@ GitHub Push：
 
 下一步：
 - 继续 Phase D。
+
+## M0.3.6
+
+日期：2026-08-30
+
+目标：情报库存与买卖交换。
+
+完成：
+- 新增 GameState.intel_inventory。
+- 新增 add_intel_to_inventory / buy_intel / sell_intel / exchange_intel。
+- 情报状态支持 Active / Sold / Traded。
+- 酒吧给对酒获得的 Intel 会写入库存。
+
+修改：
+- scripts/core/game_state.gd
+- tests/m0_headless_test.gd
+
+测试：
+- `godot --headless res://tests/m0_headless_test.tscn` 通过。
+
+Git Commit：
+- 待提交。
+
+GitHub Push：
+- 待推送。
+
+已知问题：
+- 情报交易的酒吧 UI 尚未接入。
+
+下一步：
+- 酒吧交易 UI 与对话树。

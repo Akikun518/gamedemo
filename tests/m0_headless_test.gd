@@ -16,6 +16,7 @@ func _run() -> void:
 	_run_lowball_tests(errors)
 	_run_skill_tests(errors)
 	_run_night_loop_tests(errors)
+	_run_intel_inventory_tests(errors)
 	await _run_ui_smoke(errors)
 
 	if errors.is_empty():
@@ -228,6 +229,27 @@ func _run_night_loop_tests(errors: Array[String]) -> void:
 	_expect(errors, GameState.known_intel.has("cat_necklace"), "The guest intel should enter the IntelDatabase.")
 	var wrong := GameState.serve_drink("luo", "short_circuit")
 	_expect(errors, wrong.get("reaction_tier", "") == "Wrong", "Serving a disliked drink should be Wrong.")
+
+func _run_intel_inventory_tests(errors: Array[String]) -> void:
+	var before := GameState.intel_inventory.size()
+	var added := GameState.add_intel_to_inventory("prism_ai")
+	_expect(errors, added.has("ok"), "Intel should be addable to inventory.")
+	_expect(errors, GameState.intel_inventory.size() == before + 1, "Adding intel should grow the inventory.")
+
+	var money_before := GameState.money
+	var bought := GameState.buy_intel("proto_lead", 100)
+	_expect(errors, bought.has("ok"), "Buying intel should succeed with enough money.")
+	_expect(errors, GameState.money == money_before - 100, "Buying intel should deduct money.")
+
+	var sell_before := GameState.money
+	var sold := GameState.sell_intel("prism_ai", 50)
+	_expect(errors, sold.has("ok"), "Selling owned intel should succeed.")
+	_expect(errors, GameState.money == sell_before + 50, "Selling intel should add money.")
+	_expect(errors, GameState.intel_item("prism_ai").get("status", "") == "Sold", "Sold intel should be marked Sold.")
+
+	var exchanged := GameState.exchange_intel("proto_lead", "debt_gang")
+	_expect(errors, exchanged.has("ok"), "Exchanging intel should succeed.")
+	_expect(errors, GameState.intel_item("proto_lead").get("status", "") == "Traded", "Offered intel should be marked Traded.")
 
 func _first_accepting_mercenary(contract: Contract) -> MercenaryData:
 	for mercenary in GameState.available_mercenaries():
